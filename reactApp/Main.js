@@ -1,54 +1,66 @@
 import React, { Component } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  StatusBar,
+  Vibration
+} from "react-native";
 import axios from "axios";
 
 import Constants from "expo-constants";
+import * as Speech from "expo-speech";
 
-const { manifest } = Constants;
-
-const uri = `http://${manifest.debuggerHost.split(":").shift()}:5000`;
+let width = Dimensions.get("window").width;
+let height = Dimensions.get("window").height;
 
 export default class Main extends Component {
   constructor(props) {
     super(props);
-    this.state = { data: "nothing" };
+    this.state = { data: null };
   }
 
   componentDidMount() {
     axios
-      .get("https://ultrasound-app.herokuapp.com/getmsg/?name=Mark")
+      .get("https://ultrasound-app.herokuapp.com/data")
       .then(res => {
-        //const data = res.about;
-        console.log(res.data);
+        var dataObect = res.data;
+        this.setState({ data: dataObect[0] });
       })
       .catch(error => {
         console.log(error);
       });
   }
 
-  //   componentDidMount() {
-  //     return fetch("https://127.0.0.1:5000/0/")
-  //       .then(response => response.json())
-  //       .then(responseJson => {
-  //         console.log(responseJson);
-  //         // this.setState(
-  //         //   {
-  //         //     isLoading: false,
-  //         //     dataSource: responseJson.movies
-  //         //   },
-  //         //   function() {}
-  //         // );
-  //       })
-  //       .catch(error => {
-  //         console.error(error);
-  //       });
-  //   }
+  toSpeak = number => {
+    word = "Object " + number.toString() + " meters away";
+    Speech.speak(word, {
+      voice: "com.apple.ttsbundle.Karen-compact"
+    });
+    Vibration.vibrate();
+  };
 
   render() {
-    // console.log(uri);
+    {
+      this.state.data == null ? null : this.toSpeak(this.state.data);
+    }
     return (
-      <View style={{ justifyContent: "center", alignItems: "center", flex: 1 }}>
-        <Text>Hello World</Text>
+      <View
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          flex: 1,
+          height: "100%",
+          width: "100%",
+          backgroundColor: "black"
+        }}
+      >
+        <StatusBar barStyle="light-content" />
+        <Text style={{ color: "white", fontSize: 36 }}>
+          {this.state.data}
+          {this.state.data == null ? "" : "m Away"}
+        </Text>
       </View>
     );
   }
