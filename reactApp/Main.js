@@ -34,14 +34,14 @@ export default class Main extends Component {
 
   getData = () => {
     axios
-      .get("http://9bdd8092.ngrok.io/data/")
+      .get("https://390fd075.ngrok.io/data/")
       .then(res => {
         var dataObect = res.data;
-        //console.log(dataObect);
+        console.log(dataObect);
         this.setState({
           dataLeft: dataObect["left"].toString(),
           dataRight: dataObect["right"].toString(),
-          dataCenter: dataObect["center"]
+          dataCenter: dataObect["center"].toString()
         });
       })
       .catch(error => {
@@ -54,33 +54,181 @@ export default class Main extends Component {
     numRight = parseFloat(strR) / 100;
     numCen = parseFloat(strC) / 100;
 
-    //console.log(numLeft, numRight);
+    diff = Math.abs(numLeft * 100 - numRight * 100);
 
-    if (numCen > 0) {
-      var word =
-        "Object " + numCen.toString() + " meters away directly in front of you";
-      Speech.speak(word, {
-        voice: "com.apple.ttsbundle.Karen-compact"
-      });
-      Vibration.vibrate();
-    } else {
-      if (numLeft > 0) {
-        var word = "Object " + numLeft.toString() + " meters away to your left";
+    console.log(diff);
+
+    if (diff < 5) {
+      if (numCen > 0) {
+        var word =
+          "Object " +
+          numCen.toString() +
+          " meters away directly in front of you";
         Speech.speak(word, {
           voice: "com.apple.ttsbundle.Karen-compact"
         });
+        Vibration.vibrate();
+        return (
+          <Text style={{ color: "white", fontSize: 36, textAlign: "center" }}>
+            {word}
+          </Text>
+        );
       }
+    } else {
+      //valArr = [numLeft, numRight];
 
-      if (numRight > 0) {
+      if (numLeft > 0 && numRight > 0) {
+        if (numLeft < numRight) {
+          var word =
+            "Object " + numLeft.toString() + " meters away to your left";
+          Speech.speak(word, {
+            voice: "com.apple.ttsbundle.Karen-compact"
+          });
+          Vibration.vibrate();
+          return (
+            <Text style={{ color: "white", fontSize: 40, textAlign: "center" }}>
+              {word}
+            </Text>
+          );
+        } else if (numRight < numLeft) {
+          var word =
+            "Object " + numRight.toString() + " meters away to your right";
+          Speech.speak(word, {
+            voice: "com.apple.ttsbundle.Karen-compact"
+          });
+          Vibration.vibrate();
+          return (
+            <Text style={{ color: "white", fontSize: 40, textAlign: "center" }}>
+              {word}
+            </Text>
+          );
+        }
+      } else if (numLeft == 0 && numRight > 0) {
         var word =
           "Object " + numRight.toString() + " meters away to your right";
         Speech.speak(word, {
           voice: "com.apple.ttsbundle.Karen-compact"
         });
+        Vibration.vibrate();
+        return (
+          <Text style={{ color: "white", fontSize: 40, textAlign: "center" }}>
+            {word}
+          </Text>
+        );
+      } else if (numRight == 0 && numLeft > 0) {
+        var word = "Object " + numLeft.toString() + " meters away to your left";
+        Speech.speak(word, {
+          voice: "com.apple.ttsbundle.Karen-compact"
+        });
+        Vibration.vibrate();
+        return (
+          <Text style={{ color: "white", fontSize: 40, textAlign: "center" }}>
+            {word}
+          </Text>
+        );
       }
-
-      Vibration.vibrate();
     }
+
+    // valArr = [numLeft, numRight, numCen];
+
+    // console.log(valArr);
+
+    // sum = valArr.reduce((a, b) => a + b, 0);
+
+    // console.log(sum);
+
+    // if (sum == 0) {
+    //   var word = "No objects around you";
+    //   Speech.speak(word, {
+    //     voice: "com.apple.ttsbundle.Karen-compact"
+    //   });
+    //   Vibration.vibrate();
+
+    //   return <Text style={{ color: "white", fontSize: 36 }}>{word}</Text>;
+    // } else {
+    //   //location = ['left','right','center']
+
+    //   newArr = valArr.filter(function(val) {
+    //     return val !== 0;
+    //   });
+
+    //   minVal = Math.min.apply(Math, newArr);
+
+    //   index = valArr.indexOf(minVal);
+
+    //   console.log(index, minVal);
+
+    //   if (index == 0) {
+    //     var word = "Object " + minVal.toString() + " meters away to your left";
+    //     Speech.speak(word, {
+    //       voice: "com.apple.ttsbundle.Karen-compact"
+    //     });
+    //     Vibration.vibrate();
+    //     return (
+    //       <Text style={{ color: "white", fontSize: 36, textAlign: "center" }}>
+    //         {word}
+    //       </Text>
+    //     );
+    //   } else if (index == 1) {
+    //     var word = "Object " + minVal.toString() + " meters away to your right";
+    //     Speech.speak(word, {
+    //       voice: "com.apple.ttsbundle.Karen-compact"
+    //     });
+    //     Vibration.vibrate();
+    //     return (
+    //       <Text style={{ color: "white", fontSize: 40, textAlign: "center" }}>
+    //         {word}
+    //       </Text>
+    //     );
+    //   } else {
+    //     var word =
+    //       "Object " +
+    //       minVal.toString() +
+    //       " meters away directly in front of you";
+    //     Speech.speak(word, {
+    //       voice: "com.apple.ttsbundle.Karen-compact"
+    //     });
+    //     Vibration.vibrate();
+    //     return (
+    //       <Text style={{ color: "white", fontSize: 36, textAlign: "center" }}>
+    //         {word}
+    //       </Text>
+    //     );
+    //   }
+
+    // for(var i=0; i < valArr.length; i++ ){
+    //   if(valArr[i] !== 0){
+
+    //   }
+    // }
+
+    //console.log(numLeft, numRight);
+
+    // if (numCen > 0) {
+    //   var word =
+    //     "Object " + numCen.toString() + " meters away directly in front of you";
+    //   Speech.speak(word, {
+    //     voice: "com.apple.ttsbundle.Karen-compact"
+    //   });
+    //   Vibration.vibrate();
+    // } else {
+    //   if (numLeft > 0) {
+    //     var word = "Object " + numLeft.toString() + " meters away to your left";
+    //     Speech.speak(word, {
+    //       voice: "com.apple.ttsbundle.Karen-compact"
+    //     });
+    //   }
+
+    //   if (numRight > 0) {
+    //     var word =
+    //       "Object " + numRight.toString() + " meters away to your right";
+    //     Speech.speak(word, {
+    //       voice: "com.apple.ttsbundle.Karen-compact"
+    //     });
+    //   }
+
+    //   Vibration.vibrate();
+    // }
 
     // word = "Object " + number.toString() + " meters away";
     // Speech.speak(word, {
@@ -106,7 +254,7 @@ export default class Main extends Component {
       >
         <StatusBar barStyle="light-content" />
 
-        {this.state.dataLeft &&
+        {this.state.dataLeft == null &&
         this.state.dataRight == null &&
         this.state.dataCenter == null
           ? null
